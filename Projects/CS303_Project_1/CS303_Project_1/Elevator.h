@@ -2,7 +2,7 @@
 
 #include "System.h"
 #include "Passenger.h"
-#include <vector>
+#include <set>
 #include <cstdlib>
 #include <time.h>
 
@@ -19,20 +19,20 @@ public:
 	int getDirection() { return direction; } 
 	int getSpeed() { return speed; }
 	int getStop_time() { return stop_time; }
+	void setDirection(int d) { this->direction = d; }
 
-	void Run();
-
+	void Move() {this->current_floor += direction}
+	void Let_Out();
+	void Let_In();
 
 private: 
-	vector <Passenger*> Riders; // empty
+	set <Passenger*> Riders; // empty
 	int total_floors;
 	int current_floor; // random
 	int direction; // 0 defalt
 	int speed = 5; 
 	int stop_time; // random between 1-10
 
-	void Move();
-	void Let_Out();
-	void Let_In();
+
 };
 

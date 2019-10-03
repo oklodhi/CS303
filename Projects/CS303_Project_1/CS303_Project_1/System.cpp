@@ -22,6 +22,15 @@ System::~System()
 {
 }
 
+void System::Run()
+{
+	for (Elevator e : elevatorVec) {
+		e.move();
+		e.Let_Out();
+		e.Let_In();
+	}
+}
+
 void System::add_call(Passenger* p) {
 	if (p->getExit_floor() < p->getStart_floor()) {
 		DownCalls.push_back(p*);
@@ -29,16 +38,6 @@ void System::add_call(Passenger* p) {
 	else if (p->getExit_floor() > p->getStart_floor()) {
 		UpCalls.push_back(p*);
 	}
+	p->setStart = time(NULL);
 }
 
-bool System::Has_Up()
-{
-	if (UpCalls) return true;
-	return false;
-}
-
-bool System::Has_Down()
-{
-	if (DownCalls) return true;
-	return false;
-}

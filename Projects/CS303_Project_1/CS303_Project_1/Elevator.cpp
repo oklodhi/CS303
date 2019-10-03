@@ -19,33 +19,18 @@ Elevator::~Elevator()
 {
 }
 
-void Elevator::Run()
-{
-	if (direction == 0) {
-		if (System::Has_Down()) {
-
-		}
-		else if (System::Has_Up) {
-		
-		}
+	void Elevator::Let_Out()
+	{
+		for (Passenger* p : Riders) {
+			if (p->getExit_floor == current_floor) {
+				p->setEnd = time(NULL);
+				Riders.erase(p*);
+			}
 	}
-	else {
-		Let_Out();
-		Let_In();
-	}
-	Move();
-}
 
-void Elevator::Move()
+	void Elevator::Let_In()
 {
-}
-
-void Elevator::Let_Out()
-{
-}
-
-void Elevator::Let_In()
-{
+	for ()
 }
 
 
