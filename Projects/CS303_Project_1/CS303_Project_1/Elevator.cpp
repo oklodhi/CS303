@@ -19,13 +19,34 @@ Elevator::~Elevator()
 {
 }
 
-void Run{
-	switch (direction){
-	case down:
+void Elevator::Run()
+{
+	if (direction == 0) {
+		if (System::Has_Down()) {
 
-	case up:
-
-	default: //Idle
-
+		}
+		else if (System::Has_Up) {
+		
+		}
+	}
+	else {
+		Let_Out();
+		Let_In();
+	}
+	Move();
 }
+
+void Elevator::Move()
+{
+}
+
+void Elevator::Let_Out()
+{
+}
+
+void Elevator::Let_In()
+{
+}
+
+
 }

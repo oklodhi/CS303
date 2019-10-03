@@ -20,6 +20,9 @@ public:
 	int getSpeed() { return speed; }
 	int getStop_time() { return stop_time; }
 
+	void Run();
+
+
 private: 
 	vector <Passenger*> Riders; // empty
 	int total_floors;
@@ -27,5 +30,9 @@ private:
 	int direction; // 0 defalt
 	int speed = 5; 
 	int stop_time; // random between 1-10
+
+	void Move();
+	void Let_Out();
+	void Let_In();
 };
 

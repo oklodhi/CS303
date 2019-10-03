@@ -8,10 +8,12 @@ class Passenger
 public:
 	Passenger(int num_f);
 	~Passenger();
+
 	//Getters and Setters
 	string getName() {return name; }
 	int getStart_floor() { return start_floor; }
 	int getExit_floor() { return exit_floor; }
+
 	int getStart_time() { return start_time; }
 	int getEnd_time() { return end_time; }
 
@@ -27,6 +29,6 @@ private:
 	double end_time;  // -1
 
 	string get_random_name();
-	int get_random_floor();
+	int get_random_floor(int num_f);
 };
 

@@ -1,4 +1,5 @@
 #include "Simulator.h"
+//#include <omp.h>
 
 
 
@@ -15,5 +16,9 @@ Simulator::~Simulator()
 }
 
 void Simulator::Run() {
-
+	//make run parallel
+	for (Passenger p : RidersVec){
+		System::add_call(p*)
+			//system wait (time = 2 to 6 floors)
+	}
 }

@@ -17,9 +17,11 @@ public:
 	//Getters and Setters
 	int getNum_floors() {return num_floors; }
 	int getNum_elevators() { return elevatorVec.size(); }
-
-
+	
 	void add_call(Passenger* p);
+	bool Has_Up();
+	bool Has_Down();
+	Passenger* Find_Closest();
 
 private: 
 	vector <Elevator> elevatorVec; 

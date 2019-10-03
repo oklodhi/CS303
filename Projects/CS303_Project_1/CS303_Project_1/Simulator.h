@@ -9,11 +9,10 @@ using namespace std;
 class Simulator
 {
 public:
-	Simulator(int num_people);
+	Simulator(int num_floors, int num_people);
 	~Simulator();
 
 private: 
 	vector <Passenger> RidersVec; 
-	double rand_waitTime; // wait time is around 5xfloors
 };
 
