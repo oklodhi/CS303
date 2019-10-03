@@ -16,4 +16,7 @@ int main() {
 	//Initialize Simulator(passing in num_people)
 	//Run Simulator
 
+	//Close Simulator
+	//Close System
+
 }

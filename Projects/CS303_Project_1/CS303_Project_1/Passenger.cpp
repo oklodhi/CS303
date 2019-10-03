@@ -1,13 +1,20 @@
 #include "Passenger.h"
+#include <time>
+#include <cstdlib>
 
 
 
-Passenger::Passenger()
+
+
+Passenger::Passenger(int num_f = 10)
 {
 	name = get_random_name();
-	start_floor = get_random_floor();
-	exit_floor = get_random_floor();
-	//check that exit_floor != start_floor
+
+	start_floor = get_random_floor(num_f);
+	do {
+		exit_floor = get_random_floor(num_f);
+	} while (start_floor == exit_floor);
+	
 	start_time = -1;
 	end_time = -1;
 }
@@ -18,5 +25,11 @@ Passenger::~Passenger()
 }
 
 string Passenger::get_random_name() {
-	string name_array[10] = { "Tom", "Bob", "Jill", "Kathy","Matt", "Patrick", "Lauren", "Jennifer","Ashley", "Jackson"};
+	srand(time(NULL));
+	return name_array[rand % 10];
+}
+
+int Passenger::get_random_floor(int num_f) {
+	srand(time(NULL));
+	return rand % num_f + 1;
 }

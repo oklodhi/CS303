@@ -6,7 +6,7 @@ using namespace std;
 class Passenger
 {
 public:
-	Passenger();
+	Passenger(int num_f);
 	~Passenger();
 	//Getters and Setters
 	string getName() {return name; }
@@ -19,6 +19,7 @@ public:
 	void setEnd(double x) { end_time = x; }
 
 private:
+	virtual string name_array[10] = { "Thom", "Bob", "Jill", "Kathy","Matt", "Patrick", "Lauren", "Jennifer","Ashley", "Jackson" };
 	string name; // random
 	int start_floor; // random
 	int exit_floor; // random, not start floor
