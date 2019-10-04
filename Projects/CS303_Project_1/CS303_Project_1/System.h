@@ -1,8 +1,10 @@
 #pragma once
 
-#include <vector>
 #include "Elevator.h"
 #include "Passenger.h"
+#include <vector>
+#include <set>
+
 
 using namespace std; 
 
@@ -22,9 +24,9 @@ public:
 	void add_call(Passenger* p);
 	
 private: 
-	vector <Elevator> elevatorVec; 
-	vector <Passenger*> UpCalls;
-	vector <Passenger*> DownCalls;
+	vector<Elevator> elevatorVec;
+	set <Passenger*> UpCalls;
+	set <Passenger*> DownCalls;
 	int num_floors; 
 };
 

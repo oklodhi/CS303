@@ -1,6 +1,4 @@
 #include "Passenger.h"
-#include <time>
-#include <cstdlib>
 
 
 
@@ -26,10 +24,10 @@ Passenger::~Passenger()
 
 string Passenger::get_random_name() {
 	srand(time(NULL));
-	return name_array[rand % 10];
+	return name_vec.at(rand() % 10);
 }
 
 int Passenger::get_random_floor(int num_f) {
 	srand(time(NULL));
-	return rand % num_f + 1;
+	return rand() % num_f + 1;
 }

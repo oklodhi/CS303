@@ -1,6 +1,10 @@
 #pragma once
 
 #include <string>
+#include <time.h>
+#include <cstdlib>
+#include <vector>
+
 using namespace std; 
 
 class Passenger
@@ -14,14 +18,14 @@ public:
 	int getStart_floor() { return start_floor; }
 	int getExit_floor() { return exit_floor; }
 
-	int getStart_time() { return start_time; }
-	int getEnd_time() { return end_time; }
+	double getStart_time() { return start_time; }
+	double getEnd_time() { return end_time; }
 
 	void setStart(double x) { start_time = x; }
 	void setEnd(double x) { end_time = x; }
 
 private:
-	virtual string name_array[10] = { "Thom", "Bob", "Jill", "Kathy","Matt", "Patrick", "Lauren", "Jennifer","Ashley", "Jackson" };
+	vector<string> name_vec = { "Thom", "Bob", "Jill", "Kathy","Matt", "Patrick", "Lauren", "Jennifer","Ashley", "Jackson" };
 	string name; // random
 	int start_floor; // random
 	int exit_floor; // random, not start floor

@@ -9,10 +9,13 @@ using namespace std;
 class Simulator
 {
 public:
-	Simulator(int num_floors, int num_people);
+	Simulator(System * the_system, int num_floors, int num_people);
 	~Simulator();
 
 private: 
 	vector <Passenger> RidersVec; 
+	System * my_system;
+	void Run();
+
 };
 

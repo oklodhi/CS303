@@ -1,6 +1,5 @@
 #pragma once
 
-#include "System.h"
 #include "Passenger.h"
 #include <set>
 #include <cstdlib>
@@ -8,10 +7,13 @@
 
 using namespace std; 
 
+
+
 class Elevator
 {
 public:
 	Elevator(int num_floors);
+	Elevator(Elevator&);
 	~Elevator();
 
 	// getters and setters
@@ -21,12 +23,12 @@ public:
 	int getStop_time() { return stop_time; }
 	void setDirection(int d) { this->direction = d; }
 
-	void Move() {this->current_floor += direction}
+	void Move() { this->current_floor += direction; }
 	void Let_Out();
 	void Let_In();
 
 private: 
-	set <Passenger*> Riders; // empty
+	set <Passenger&> Riders; // empty
 	int total_floors;
 	int current_floor; // random
 	int direction; // 0 defalt
