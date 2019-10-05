@@ -37,16 +37,21 @@ typedef pair<int, int> pairs;
 // elevator struct
 // includes up and down wait lists, current calls, movement state, and current floor
 struct elevator {
-	// up_wait will store floor requests for in up direction
-	static set<pairs> up_wait;
-	// down_wait will store floor requests for in down direction
-	static set<pairs> down_wait;
 	// stores call requests made for elevator
 	set<int> calls;
 	// movement state. idle by default. 1 for up, -1 for down
 	int direction = idle;
 	// current elevator floor. 1 by default
 	int cur_floor = 1;
+};
+
+struct elevators {
+	// up_wait will store floor requests for in up direction
+	set<pairs> up_wait;
+	// down_wait will store floor requests for in down direction
+	set<pairs> down_wait;
+
+	vector <elevator*> v_ee;
 };
 
 // sets the call direction based on from floor and to floor
@@ -99,97 +104,97 @@ pairs find_min(set<pairs> wait_set) {
 	return min;
 }
 
-elevator choose_best_elevator(vector<elevator> & v_e) {
-	return v_e.at(0);
+elevator& choose_best_elevator(elevators & v_e) {
+	return *v_e.v_ee.at(0);
 }
 
 // adds the elevator request to calls. stores from floor, to floor, and takes elevator reference
-void add_call(int in_floor, int out_floor, vector<elevator> & v_e) {
-	elevator e = choose_best_elevator(v_e);
+void add_call(int in_floor, int out_floor, elevators & v_e) {
+	elevator * e = &choose_best_elevator(v_e);
 
 	// if direction is idle then... 
-	if (e.direction == idle) {
+	if (e->direction == idle) {
 		// current floor = the floor that the call came from
 
 		cout << "Elevator is idle..." << endl; 
-		e.cur_floor = in_floor;
-		cout << "Elevator moving to..." << e.cur_floor << endl;
+		e->cur_floor = in_floor;
+		cout << "Elevator moving to..." << e->cur_floor << endl;
 
 		// insert the out floor to calls list
-		e.calls.insert(out_floor);
+		e->calls.insert(out_floor);
 		cout << "Adding call to list... " << out_floor << endl;
 		// get the direction that the elevator needs to move
-		e.direction = call_direction(in_floor, out_floor);
-		cout << "Elevator now moving in..." << e.direction << endl;
+		e->direction = call_direction(in_floor, out_floor);
+		cout << "Elevator now moving in..." << e->direction << endl;
 	}
 	// if the elevator is moving up...
-	else if (e.direction == up) {
+	else if (e->direction == up) {
 		// if the request is made from a floor higher than elevator current floor
 		cout << "Elevator is moving up..." << endl;
 		if (call_direction(in_floor, out_floor) == up) {
 			cout << "Call made from above floor... " << endl;
 			// current elevator floor is below the floor person wants to get in from
-			if (e.cur_floor < in_floor) {
+			if (e->cur_floor < in_floor) {
 				// queue the floor to calls
-				e.calls.insert(in_floor);
-				e.calls.insert(out_floor);
+				e->calls.insert(in_floor);
+				e->calls.insert(out_floor);
 				cout << "Adding out floor calls to list... " << out_floor << endl;
 			}
-			else if (e.cur_floor == in_floor) {
-				e.calls.insert(out_floor);
+			else if (e->cur_floor == in_floor) {
+				e->calls.insert(out_floor);
 			}
 			else { 
 				// current elevator floor is above the floor person wants to get in from
 				cout << "Call made from below floor..." << endl;
-				e.up_wait.emplace(in_floor, out_floor); 
+				v_e.up_wait.emplace(in_floor, out_floor); 
 				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 			}
 		}
 		else { 
 			// if call_direction is down, queue the calls in waiting
-			cout << "Call made from below but elevator moving... " << call_direction << endl;
-			e.down_wait.emplace(in_floor, out_floor); 
+			cout << "Call made from below but elevator moving... " << e->direction << endl;
+			v_e.down_wait.emplace(in_floor, out_floor);
 			cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 		}
 	}
 	// if elevator is moving down
-	else if (e.direction == down) {
-		cout << "Elevator is moving... " << e.direction << endl;
+	else if (e->direction == down) {
+		cout << "Elevator is moving... " << e->direction << endl;
 		// if call came from floor below
 		if (call_direction(in_floor, out_floor) == down) {
 			cout << "Call made from below floor... " << endl;
 			// if elevator is above the floor call came from
-			if (e.cur_floor > in_floor) {
+			if (e->cur_floor > in_floor) {
 				// queue floor calls
-				e.calls.insert(in_floor);
-				e.calls.insert(out_floor);
+				e->calls.insert(in_floor);
+				e->calls.insert(out_floor);
 			}
-			else if (e.cur_floor == in_floor) {
-				e.calls.insert(out_floor);
+			else if (e->cur_floor == in_floor) {
+				e->calls.insert(out_floor);
 				cout << "Adding out floor calls to list... " << out_floor << endl;
 			}
 			else { 
 				// if current floor is below the call floor, then queue the call in wait list
 				cout << "Call made from above floor..." << endl;
-				e.down_wait.emplace(in_floor, out_floor); 
+				v_e.down_wait.emplace(in_floor, out_floor);
 				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 			}
 		}
 		else { 
 			// if call was made from top, but elevator is doing down, queue the calls in waiting 
 			cout << "Call made from below but elevator moving... " << call_direction << endl;
-			e.up_wait.emplace(in_floor, out_floor); 
+			v_e.up_wait.emplace(in_floor, out_floor);
 			cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 		}
 	}
 }
 
 // checks the waiting queues for calls 
-void load_wait(elevator & e) {
+void load_wait(elevator & e, elevators & v_e) {
 	// if elevator is going up, and people are waiting up top to be picked up
-	if (e.direction == up && e.up_wait.size()) {
+	if (e.direction == up && v_e.up_wait.size()) {
 		// iterate through waiting list of people
-		for (set<pairs>::const_iterator it = e.up_wait.begin(); it != e.up_wait.end(); ++it) {
+		for (set<pairs>::const_iterator it = v_e.up_wait.begin(); it != v_e.up_wait.end(); ++it) {
 			// queue their from floor and to floor calls
 			if (e.cur_floor != it->first) {
 				e.calls.insert(it->first);
@@ -197,12 +202,12 @@ void load_wait(elevator & e) {
 			e.calls.insert(it->second);
 		}
 		// once every person is queues, clear the waiting list
-		e.up_wait.clear();
+		v_e.up_wait.clear();
 	}
 	// if elevator is going down, and people are waiting down below to be picked up
-	else if (e.direction == down && e.down_wait.size()) {
+	else if (e.direction == down && v_e.down_wait.size()) {
 		// iterate though the waiting list of people
-		for (set<pairs>::const_iterator it = e.down_wait.begin(); it != e.down_wait.end(); ++it) {
+		for (set<pairs>::const_iterator it = v_e.down_wait.begin(); it != v_e.down_wait.end(); ++it) {
 			// queue their from floor and to floor calls
 			if (e.cur_floor != it->first) {
 				e.calls.insert(it->first);
@@ -210,116 +215,117 @@ void load_wait(elevator & e) {
 			e.calls.insert(it->second);
 		}
 		// once every person is queued, clear the waiting list
-		e.down_wait.clear();
+		v_e.down_wait.clear();
 	}
 }
 
 // this is the main system logic that the elevator uses to step through every instruction recieved 
-void system_step(vector<elevator> & v_e, int steps = 1) {
+void system_step(elevators & v_e, int steps = 1) {
 	for (int s = 0; s < steps; ++s) {
-		elevator e = choose_best_elevator(v_e);
+		elevator * e = &choose_best_elevator(v_e);
 
 		// if calls currently exist
-		if (e.calls.size()) {
+		if (e->calls.size()) {
 			// move the elevator in the direction of those calls. Up or down
-			e.cur_floor += e.direction;
+			e->cur_floor += e->direction;
 			// again... check (in the background), if a call was made for current floor we are moving through
-			if (e.calls.count(e.cur_floor)) {
+			if (e->calls.count(e->cur_floor)) {
 				// if so, remove it because we are now visiting
-				e.calls.erase(e.cur_floor);
+				e->calls.erase(e->cur_floor);
 			}
 		}
 		// if no calls exist, check the waiting list for any people waiting
 		else {
-			if (e.up_wait.size() || e.down_wait.size()) {
+			if (v_e.up_wait.size() || v_e.down_wait.size()) {
 				// create temporary pair structure to hold to and from floors
 				pairs temp;
 
 				// if elevator is going up
-				if (e.direction == up) {
+				if (e->direction == up) {
 					// but if calls are made from floors below 
-					if (e.down_wait.size()) {
+					if (v_e.down_wait.size()) {
 						// find lowest floor needed to visit
-						temp = find_max(e.down_wait);
+						temp = find_max(v_e.down_wait);
 						// remove that from down wait list
-						e.down_wait.erase(temp);
+						v_e.down_wait.erase(temp);
 					}
 					// but if calls are made from floors above
-					else if (e.up_wait.size()) {
+					else if (v_e.up_wait.size()) {
 						// find max floor needed to visit
-						temp = find_min(e.up_wait);
+						temp = find_min(v_e.up_wait);
 						// remove that from up wait list
-						e.up_wait.erase(temp);
+						v_e.up_wait.erase(temp);
 					}
 				}
 				// if elevator is going down
-				else if (e.direction == down) {
+				else if (e->direction == down) {
 					// but if calls are made from floors above
-					if (e.up_wait.size()) {
+					if (v_e.up_wait.size()) {
 						// find max floor needed to visit
-						temp = find_min(e.up_wait);
+						temp = find_min(v_e.up_wait);
 						// remove from up wait list
-						e.up_wait.erase(temp);
+						v_e.up_wait.erase(temp);
 					}
 					// but if calls are made from floors below
-					else if (e.down_wait.size()) {
+					else if (v_e.down_wait.size()) {
 						// find lowest floor needed to visit
-						temp = find_max(e.down_wait);
+						temp = find_max(v_e.down_wait);
 						// remove from down wait list
-						e.down_wait.erase(temp);
+						v_e.down_wait.erase(temp);
 					}
 				}
 
 				// insert those wait list calls, stored in temp, to main calls queue
-				e.calls.insert(temp.second);
+				e->calls.insert(temp.second);
 				// current floor = passenger pickup floor
-				e.cur_floor = temp.first;
+				e->cur_floor = temp.first;
 				// Set direction based on start passenger's call
-				e.direction = call_direction(temp.first, temp.second);
+				e->direction = call_direction(temp.first, temp.second);
 
 				// checks waiting requests for elevator 
-				load_wait(e);
+				load_wait(*e, v_e);
 			}
 			// if no calls exist still, then elevator is put into idle state
 			else { 
-				e.direction = idle; 
+				e->direction = idle;
 			}
 		}
 	}
 }
 
 int main() {
-	vector<elevator> vec_elevators;
+	//vector<elevator> vec_elevators;
 	// elevator object called e1
 	
+	elevators e; 
 	elevator e1;
 	elevator e2;
-	vec_elevators.push_back(e1);
-	vec_elevators.push_back(e2);
+	e.v_ee.push_back(&e1);
+	e.v_ee.push_back(&e2);
 
 	// manually adding calls for elevator pickup and dropoff requests
 	// and elevator system steps through the simulation
 
-	add_call(1, 4, vec_elevators);
-	system_step(vec_elevators);
+	add_call(1, 4, e);
+	system_step(e);
 
-	add_call(8, 1, vec_elevators);
-	system_step(vec_elevators);
+	add_call(8, 1, e);
+	system_step(e);
 
-	add_call(1, 8, vec_elevators);
-	system_step(vec_elevators);
+	add_call(1, 8, e);
+	system_step(e);
 
-	add_call(5, 2, vec_elevators);
-	add_call(3, 1, vec_elevators);
-	system_step(vec_elevators);
+	add_call(5, 2, e);
+	add_call(3, 1, e);
+	system_step(e);
 
-	add_call(8, 1, vec_elevators);
-	add_call(6, 2, vec_elevators);
+	add_call(8, 1, e);
+	add_call(6, 2, e);
 
 	// while the elevator is moving either up or down, it is stepping and constantly making changes to
 	// the pick up, drop off, and call requests lists. 
 	while (e1.direction != idle) {
-		system_step(vec_elevators);
+		system_step(e);
 	}
 
 	return 0;
