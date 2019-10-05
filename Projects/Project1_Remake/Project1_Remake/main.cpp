@@ -78,30 +78,18 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 
 void load_wait(elevator & e) {
 	if (e.direction == up && e.up_wait.size()) {
-		set<pairs> temp_list;
 		for (set<pairs>::const_iterator it = e.up_wait.begin(); it != e.up_wait.end(); ++it) {
-			if (call_direction(it->first, it->second) == e.direction) {
-				e.calls.insert(it->first);
-				e.calls.insert(it->second);
-				temp_list.emplace(it->first, it->second);
-			}
+			e.calls.insert(it->first);
+			e.calls.insert(it->second);
 		}
-		for (set<pairs>::const_iterator it = temp_list.begin(); it != temp_list.end(); ++it) {
-			e.up_wait.erase(pairs(it->first, it->second));
-		}
+		e.up_wait.clear();
 	}
 	else if (e.direction == down && e.down_wait.size()) {
-		set<pairs> temp_list;
 		for (set<pairs>::const_iterator it = e.down_wait.begin(); it != e.down_wait.end(); ++it) {
-			if (call_direction(it->first, it->second) == e.direction) {
-				e.calls.insert(it->first);
-				e.calls.insert(it->second);
-				temp_list.emplace(it->first, it->second);
-			}
+			e.calls.insert(it->first);
+			e.calls.insert(it->second);
 		}
-		for (set<pairs>::const_iterator it = temp_list.begin(); it != temp_list.end(); ++it) {
-			e.down_wait.erase(pairs(it->first, it->second));
-		}
+		e.down_wait.clear();
 	}
 }
 
@@ -155,15 +143,15 @@ int main(){
 	add_call(1, 4, e1);
 	system_step(e1);
 
-	add_call(3, 4, e1);
-	system_step(e1, 2);
+	add_call(8, 1, e1);
+	system_step(e1);
 
-	add_call(5, 8, e1);
+	add_call(1, 8, e1);
 	system_step(e1);
 
 	add_call(5, 2, e1);
 	add_call(3, 1, e1);
-	system_step(e1, 5);
+	system_step(e1);
 
 	add_call(8, 1, e1);
 	add_call(6, 2, e1);
