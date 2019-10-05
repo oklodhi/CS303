@@ -121,8 +121,12 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 		// if the request is made from a floor higher than elevator current floor
 		if (call_direction(in_floor, out_floor) == up) {
 			// current elevator floor is below the floor person wants to get in from
-			if (e.cur_floor <= in_floor) {
+			if (e.cur_floor < in_floor) {
 				// queue the floor to calls
+				e.calls.insert(in_floor);
+				e.calls.insert(out_floor);
+			}
+			else if (e.cur_floor == in_floor) {
 				e.calls.insert(out_floor);
 			}
 			else { 
@@ -140,8 +144,12 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 		// if call came from floor below
 		if (call_direction(in_floor, out_floor) == down) {
 			// if elevator is above the floor call came from
-			if (e.cur_floor >= in_floor) {
+			if (e.cur_floor > in_floor) {
 				// queue floor calls
+				e.calls.insert(in_floor);
+				e.calls.insert(out_floor);
+			}
+			else if (e.cur_floor == in_floor) {
 				e.calls.insert(out_floor);
 			}
 			else { 
@@ -163,7 +171,9 @@ void load_wait(elevator & e) {
 		// iterate through waiting list of people
 		for (set<pairs>::const_iterator it = e.up_wait.begin(); it != e.up_wait.end(); ++it) {
 			// queue their from floor and to floor calls
-			e.calls.insert(it->first);
+			if (e.cur_floor != it->first) {
+				e.calls.insert(it->first);
+			}
 			e.calls.insert(it->second);
 		}
 		// once every person is queues, clear the waiting list
@@ -174,7 +184,9 @@ void load_wait(elevator & e) {
 		// iterate though the waiting list of people
 		for (set<pairs>::const_iterator it = e.down_wait.begin(); it != e.down_wait.end(); ++it) {
 			// queue their from floor and to floor calls
-			e.calls.insert(it->first);
+			if (e.cur_floor != it->first) {
+				e.calls.insert(it->first);
+			}
 			e.calls.insert(it->second);
 		}
 		// once every person is queued, clear the waiting list
