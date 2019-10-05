@@ -34,7 +34,5 @@ private:
 	int direction; // 0 defalt
 	int speed = 5; 
 	int stop_time; // random between 1-10
-
-
 };
 
