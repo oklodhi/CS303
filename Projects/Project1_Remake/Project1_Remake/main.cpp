@@ -116,39 +116,55 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 	// if the elevator is moving up...
 	else if (e.direction == up) {
 		// if the request is made from a floor higher than elevator current floor
+		cout << "Elevator is moving up..." << endl;
 		if (call_direction(in_floor, out_floor) == up) {
+			cout << "Call made from above floor... " << endl;
 			// current elevator floor is below the floor person wants to get in from
 			if (e.cur_floor <= in_floor) {
+				cout << "Call made from above floor... " << in_floor << endl;
 				// queue the floor to calls
 				e.calls.insert(out_floor);
+				cout << "Adding out floor calls to list... " << out_floor << endl;
 			}
 			else { 
-				// if call was placed from floor below, then queue it in waiting list
+				// current elevator floor is above the floor person wants to get in from
+				cout << "Call made from below floor..." << endl;
 				e.up_wait.emplace(in_floor, out_floor); 
+				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 			}
 		}
 		else { 
-			// if call was made from bottom, but elevator is going up, queue the calls in waiting
+			// if call_direction is down, queue the calls in waiting
+			cout << "Call made from below but elevator moving... " << call_direction << endl;
 			e.down_wait.emplace(in_floor, out_floor); 
+			cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 		}
 	}
 	// if elevator is moving down
 	else if (e.direction == down) {
+		cout << "Elevator is moving... " << e.direction << endl;
 		// if call came from floor below
 		if (call_direction(in_floor, out_floor) == down) {
+			cout << "Call made from below floor... " << endl;
 			// if elevator is above the floor call came from
 			if (e.cur_floor >= in_floor) {
+				cout << "Call made from below floor... " << in_floor << endl;
 				// queue floor calls
 				e.calls.insert(out_floor);
+				cout << "Adding out floor calls to list... " << out_floor << endl;
 			}
 			else { 
 				// if current floor is below the call floor, then queue the call in wait list
+				cout << "Call made from above floor..." << endl;
 				e.down_wait.emplace(in_floor, out_floor); 
+				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 			}
 		}
 		else { 
 			// if call was made from top, but elevator is doing down, queue the calls in waiting 
+			cout << "Call made from below but elevator moving... " << call_direction << endl;
 			e.up_wait.emplace(in_floor, out_floor); 
+			cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
 		}
 	}
 }
