@@ -38,9 +38,9 @@ typedef pair<int, int> pairs;
 // includes up and down wait lists, current calls, movement state, and current floor
 struct elevator {
 	// up_wait will store floor requests for in up direction
-	set<pairs> up_wait;
+	static set<pairs> up_wait;
 	// down_wait will store floor requests for in down direction
-	set<pairs> down_wait;
+	static set<pairs> down_wait;
 	// stores call requests made for elevator
 	set<int> calls;
 	// movement state. idle by default. 1 for up, -1 for down
@@ -99,8 +99,14 @@ pairs find_min(set<pairs> wait_set) {
 	return min;
 }
 
+elevator choose_best_elevator(vector<elevator> & v_e) {
+	return v_e.at(0);
+}
+
 // adds the elevator request to calls. stores from floor, to floor, and takes elevator reference
-void add_call(int in_floor, int out_floor, elevator & e) {
+void add_call(int in_floor, int out_floor, vector<elevator> & v_e) {
+	elevator e = choose_best_elevator(v_e);
+
 	// if direction is idle then... 
 	if (e.direction == idle) {
 		// current floor = the floor that the call came from
@@ -209,8 +215,10 @@ void load_wait(elevator & e) {
 }
 
 // this is the main system logic that the elevator uses to step through every instruction recieved 
-void system_step(elevator & e, int steps = 1) {
+void system_step(vector<elevator> & v_e, int steps = 1) {
 	for (int s = 0; s < steps; ++s) {
+		elevator e = choose_best_elevator(v_e);
+
 		// if calls currently exist
 		if (e.calls.size()) {
 			// move the elevator in the direction of those calls. Up or down
@@ -281,32 +289,37 @@ void system_step(elevator & e, int steps = 1) {
 }
 
 int main() {
+	vector<elevator> vec_elevators;
 	// elevator object called e1
+	
 	elevator e1;
+	elevator e2;
+	vec_elevators.push_back(e1);
+	vec_elevators.push_back(e2);
 
 	// manually adding calls for elevator pickup and dropoff requests
 	// and elevator system steps through the simulation
 
-	add_call(1, 4, e1);
-	system_step(e1);
+	add_call(1, 4, vec_elevators);
+	system_step(vec_elevators);
 
-	add_call(8, 1, e1);
-	system_step(e1);
+	add_call(8, 1, vec_elevators);
+	system_step(vec_elevators);
 
-	add_call(1, 8, e1);
-	system_step(e1);
+	add_call(1, 8, vec_elevators);
+	system_step(vec_elevators);
 
-	add_call(5, 2, e1);
-	add_call(3, 1, e1);
-	system_step(e1);
+	add_call(5, 2, vec_elevators);
+	add_call(3, 1, vec_elevators);
+	system_step(vec_elevators);
 
-	add_call(8, 1, e1);
-	add_call(6, 2, e1);
+	add_call(8, 1, vec_elevators);
+	add_call(6, 2, vec_elevators);
 
 	// while the elevator is moving either up or down, it is stepping and constantly making changes to
 	// the pick up, drop off, and call requests lists. 
 	while (e1.direction != idle) {
-		system_step(e1);
+		system_step(vec_elevators);
 	}
 
 	return 0;
