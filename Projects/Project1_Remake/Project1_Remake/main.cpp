@@ -19,6 +19,7 @@
 // include necessary libraries
 #include <vector>
 #include <set>
+#include <iostream>
 
 // using standard namespace std::
 using namespace std;
@@ -99,13 +100,17 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 	// if direction is idle then... 
 	if (e.direction == idle) {
 		// current floor = the floor that the call came from
+
+		cout << "Elevator is idle..." << endl; 
 		e.cur_floor = in_floor;
-		// insert the in floor to calls list
-		e.calls.insert(in_floor);
+		cout << "Elevator moving to..." << e.cur_floor << endl;
+
 		// insert the out floor to calls list
 		e.calls.insert(out_floor);
+		cout << "Adding call to list... " << out_floor << endl;
 		// get the direction that the elevator needs to move
 		e.direction = call_direction(in_floor, out_floor);
+		cout << "Elevator now moving in..." << e.direction << endl;
 	}
 	// if the elevator is moving up...
 	else if (e.direction == up) {
@@ -114,7 +119,6 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 			// current elevator floor is below the floor person wants to get in from
 			if (e.cur_floor <= in_floor) {
 				// queue the floor to calls
-				e.calls.insert(in_floor);
 				e.calls.insert(out_floor);
 			}
 			else { 
@@ -134,7 +138,6 @@ void add_call(int in_floor, int out_floor, elevator & e) {
 			// if elevator is above the floor call came from
 			if (e.cur_floor >= in_floor) {
 				// queue floor calls
-				e.calls.insert(in_floor);
 				e.calls.insert(out_floor);
 			}
 			else { 
@@ -180,16 +183,8 @@ void system_step(elevator & e, int steps = 1) {
 	for (int s = 0; s < steps; ++s) {
 		// if calls currently exist
 		if (e.calls.size()) {
-			// if current floor is called for
-			if (e.calls.count(e.cur_floor)) {
-				// remove current floor from calls list because elevator just visited
-				e.calls.erase(e.cur_floor);
-			}
-			// if more calls exist
-			if (e.calls.size()) {
-				// move the elevator in the direction of those calls. Up or down
-				e.cur_floor += e.direction;
-			}
+			// move the elevator in the direction of those calls. Up or down
+			e.cur_floor += e.direction;
 			// again... check (in the background), if a call was made for current floor we are moving through
 			if (e.calls.count(e.cur_floor)) {
 				// if so, remove it because we are now visiting
@@ -238,7 +233,6 @@ void system_step(elevator & e, int steps = 1) {
 				}
 
 				// insert those wait list calls, stored in temp, to main calls queue
-				e.calls.insert(temp.first);
 				e.calls.insert(temp.second);
 				// current floor = passenger pickup floor
 				e.cur_floor = temp.first;
@@ -249,7 +243,9 @@ void system_step(elevator & e, int steps = 1) {
 				load_wait(e);
 			}
 			// if no calls exist still, then elevator is put into idle state
-			else { e.direction = idle; }
+			else { 
+				e.direction = idle; 
+			}
 		}
 	}
 }
