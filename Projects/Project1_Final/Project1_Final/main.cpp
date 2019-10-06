@@ -158,7 +158,7 @@ each_elevator& choose_best_elevator(int in_floor, int out_floor, elevators & v_e
 // adds the elevator request to calls. stores from floor, to floor, and takes elevator reference
 void add_call(int in_floor, int out_floor, elevators & v_e) {
 	// best available elevator object
-	cout << "Adding call (" << in_floor << "," << out_floor << ")..." <<  endl;
+	cout << "Adding call to system (" << in_floor << "," << out_floor << ")..." <<  endl;
 	each_elevator * e = &choose_best_elevator(in_floor, out_floor, v_e);
 
 	// if elevator is available
@@ -180,13 +180,13 @@ void add_call(int in_floor, int out_floor, elevators & v_e) {
 		if (call_direction(in_floor, out_floor) == up) {
 			// queue in up wait list
 			v_e.up_wait.emplace(in_floor, out_floor);
-			cout << "Adding call to up wait list... " << in_floor << endl;
+			cout << "Adding call to up wait list...  (" << in_floor << "," << out_floor << ")" << endl;
 		}
 		// if call is made from below
 		else if (call_direction(in_floor, out_floor) == down) {
 			// queue in down wait list
 			v_e.down_wait.emplace(in_floor, out_floor);
-			cout << "Adding call to down wait list... " << in_floor << endl;
+			cout << "Adding call to down wait list... (" << in_floor << "," << out_floor << ")" << endl;
 		}
 	}
 }
@@ -236,13 +236,13 @@ void load_wait(each_elevator & e, elevators & v_e) {
 
 // this is the main system logic that the elevator uses to step through every instruction recieved 
 void system_step(elevators & v_e, int steps = 1) {
-	cout << "\nStepping elevator... stand by..." << endl;
+	cout << "\nStepping elevators... stand by..." << endl;
 	for (int s = 0; s < steps; ++s) {
 		for (each_elevator *e : v_e.v_ee) {
 
 			// if calls currently exist
 			if (e->calls.size()) {
-				cout << "Processing calls..." << endl;
+				cout  << "Elevator " << e->id <<  " Processing calls..." << endl;
 				// move the elevator in the direction of those calls. Up or down
 				e->cur_floor += e->direction;
 				cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
@@ -329,11 +329,20 @@ void system_step(elevators & v_e, int steps = 1) {
 				else {
 					cout << "No calls currently exist..." << endl;
 					e->direction = idle;
-					cout << "Elevator state set to... " << get_enum_direction(e->direction) << endl;
+					cout << "Elevator " << e->id << " state set to... " << get_enum_direction(e->direction) << endl;
 				}
 			}
 		}
 	}
+}
+
+bool all_idle(elevators &e) {
+	for (each_elevator * ele : e.v_ee) {
+		if (ele->direction != idle) {
+			return false;
+		}
+	}
+	return true;
 }
 
 int main() {
@@ -341,19 +350,17 @@ int main() {
 	// elevator object called e1
 
 	elevators e;
-	each_elevator e1;
-	each_elevator e2;
 	cout << "Created Elevator objects..." << endl;
-
-	e.v_ee.push_back(&e1);
-	e.v_ee.push_back(&e2);
-
-	for (int i = 0; i < e.v_ee.size(); i++){
-		e.v_ee.at(i)->id = i;
+	
+	const int NUM_ELE = 2; 
+	for (int i = 0; i < NUM_ELE; i++) {
+		each_elevator *ele = new each_elevator;
+		e.v_ee.push_back(ele);
+		e.v_ee.at(i)->id = i+1;
 	}
-	int total_elevators = e.v_ee.size(); 
+
 	cout << "Elevator object pushed into vectors list..." << endl;
-	cout << "There are " << total_elevators << " elevators..." << endl;
+	cout << "There are " << NUM_ELE << " elevators..." << endl;
 
 	// manually adding calls for elevator pickup and dropoff requests
 	// and elevator system steps through the simulation
@@ -376,7 +383,7 @@ int main() {
 
 	// while the elevator is moving either up or down, it is stepping and constantly making changes to
 	// the pick up, drop off, and call requests lists. 
-	while (e1.direction != idle) {
+	while (all_idle(e) == false) {
 		system_step(e);
 	}
 
