@@ -245,7 +245,7 @@ void system_step(elevators & v_e, int steps = 1) {
 				cout  << "Elevator " << e->id <<  " Processing calls..." << endl;
 				// move the elevator in the direction of those calls. Up or down
 				e->cur_floor += e->direction;
-				cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
+				cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << " to floor " << e->cur_floor << endl;
 				// again... check (in the background), if a call was made for current floor we are moving through
 				if (e->calls.count(e->cur_floor)) {
 					cout << "Reached call floor... " << e->cur_floor << endl;
@@ -261,9 +261,9 @@ void system_step(elevators & v_e, int steps = 1) {
 					// create temporary pair structure to hold to and from floors
 					pairs temp;
 					cout << "Created temp set..." << endl;
-					// if elevator is going up
+					// if elevator was going up
 					if (e->direction == up) {
-						cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
+						//cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
 						// but if calls are made from floors below 
 						if (v_e.down_wait.size()) {
 							cout << "Down wait list has people waiting..." << endl;
@@ -285,9 +285,9 @@ void system_step(elevators & v_e, int steps = 1) {
 							cout << "Removing from wait list... " << temp.second << endl;
 						}
 					}
-					// if elevator is going down
+					// if elevator was going down
 					else if (e->direction == down) {
-						cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
+						//cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
 						// but if calls are made from floors above
 						if (v_e.up_wait.size()) {
 							cout << "Up wait list has people waiting..." << endl;
@@ -365,6 +365,14 @@ int main() {
 	// manually adding calls for elevator pickup and dropoff requests
 	// and elevator system steps through the simulation
 
+	/* INSTRUCTIONS FOR GRADER
+
+		You can change number of elevators by chaning NUM_ELE up above. 
+		You can also add / change your own calls with add_call("from floor", "to floor", e) as seen below. 
+		You may also add as many steps, in the system_step function call, which is like adding a pause in between calls. During this time, the elevators run on their own.
+	
+	*/
+
 	add_call(1, 4, e);
 	system_step(e);
 
@@ -380,6 +388,31 @@ int main() {
 
 	add_call(8, 1, e);
 	add_call(6, 2, e);
+
+	add_call(8, 1, e);
+	system_step(e, 5);
+
+	add_call(3, 10, e);
+	system_step(e);
+
+	add_call(21, 2, e);
+	add_call(3, 100, e);
+	system_step(e);
+
+	add_call(88, 23, e);
+	add_call(6, 1, e);
+	add_call(8, 1, e);
+	system_step(e);
+
+	add_call(1, 8, e);
+	system_step(e, 5);
+
+	add_call(35, 6, e);
+	add_call(121, 1, e);
+	system_step(e);
+
+	add_call(4, 67, e);
+	add_call(78, 34, e);
 
 	// while the elevator is moving either up or down, it is stepping and constantly making changes to
 	// the pick up, drop off, and call requests lists. 
