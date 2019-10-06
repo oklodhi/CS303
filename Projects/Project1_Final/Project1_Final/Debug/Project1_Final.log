@@ -1,2 +1,4 @@
 ﻿  main.cpp
+c:\users\momer\documents\github\cs303\projects\project1_final\project1_final\main.cpp(351): warning C4018: '<': signed/unsigned mismatch
+c:\users\momer\documents\github\cs303\projects\project1_final\project1_final\main.cpp(89): warning C4715: 'get_enum_direction': not all control paths return a value
   Project1_Final.vcxproj -> C:\Users\momer\Documents\Github\CS303\Projects\Project1_Final\Debug\Project1_Final.exe

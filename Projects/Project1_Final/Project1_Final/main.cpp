@@ -19,6 +19,7 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include <string>
 
 // using standard namespace std::
 using namespace std;
@@ -38,6 +39,8 @@ struct each_elevator {
 	int direction = idle;
 	// current elevator floor. 1 by default
 	int cur_floor = 1;
+
+	int id = 0; 
 };
 
 // all elevators struct
@@ -66,6 +69,22 @@ int call_direction(int i, int o) {
 		// no call was made / what if person wants to get off on same floor as they got on
 		// returns idle state
 		return idle;
+	}
+}
+
+// return the enum in text format
+string get_enum_direction(int dir) {
+	if (dir == -1) {
+		// return down if direction is -1
+		return "down";
+	}
+	else if (dir == 0) {
+		// return idle if direction is 0
+		return "idle";
+	}
+	else if (dir == 1) {
+		// return up if direction is 1
+		return "up";
 	}
 }
 
@@ -109,10 +128,12 @@ each_elevator& choose_best_elevator(int in_floor, int out_floor, elevators & v_e
 		// if the elevator is moving up, call is made from above, and call direction is up
 		if (e->direction == up && call_direction(in_floor, out_floor) == up && e->cur_floor <= in_floor) {
 			// return this elevator 
+			cout << "Sending elevator [" << e->id << "]" << endl;
 			return *e;
 		}
 		// if elevator is moving down, call is made from below, and call direction is down
 		else if (e->direction == down && call_direction(in_floor, out_floor) == down && e->cur_floor >= in_floor) {
+			cout << "Sending elevator [" << e->id << "]" << endl;
 			// return this elevator
 			return *e;
 		}
@@ -121,6 +142,7 @@ each_elevator& choose_best_elevator(int in_floor, int out_floor, elevators & v_e
 	for (each_elevator * e : v_e.v_ee) {
 		// if any have idle state
 		if (e->direction == idle) {
+			cout << "Sending elevator [" << e->id << "]" << endl;
 			// set its current floor to in floor
 			e->cur_floor = in_floor;
 			// set its direction to call direction
@@ -136,11 +158,11 @@ each_elevator& choose_best_elevator(int in_floor, int out_floor, elevators & v_e
 // adds the elevator request to calls. stores from floor, to floor, and takes elevator reference
 void add_call(int in_floor, int out_floor, elevators & v_e) {
 	// best available elevator object
+	cout << "Adding call (" << in_floor << "," << out_floor << ")..." <<  endl;
 	each_elevator * e = &choose_best_elevator(in_floor, out_floor, v_e);
 
 	// if elevator is available
 	if (e) {
-		cout << "Best elevator found" << endl;
 		// if current floor is not in floor
 		if (e->cur_floor != in_floor) {
 			// queue in call list
@@ -167,82 +189,6 @@ void add_call(int in_floor, int out_floor, elevators & v_e) {
 			cout << "Adding call to down wait list... " << in_floor << endl;
 		}
 	}
-	/*
-		// if direction is idle then...
-		if (e->direction == idle) {
-			// current floor = the floor that the call came from
-
-			cout << "Elevator is idle..." << endl;
-			e->cur_floor = in_floor;
-			cout << "Elevator moving to..." << e->cur_floor << endl;
-
-			// insert the out floor to calls list
-			e->calls.insert(out_floor);
-			cout << "Adding call to list... " << out_floor << endl;
-			// get the direction that the elevator needs to move
-			e->direction = call_direction(in_floor, out_floor);
-			cout << "Elevator now moving in..." << e->direction << endl;
-		}
-		// if the elevator is moving up...
-		else if (e->direction == up) {
-			// if the request is made from a floor higher than elevator current floor
-			cout << "Elevator is moving up..." << endl;
-			if (call_direction(in_floor, out_floor) == up) {
-				cout << "Call made from above floor... " << endl;
-				// current elevator floor is below the floor person wants to get in from
-				if (e->cur_floor < in_floor) {
-					// queue the floor to calls
-					e->calls.insert(in_floor);
-					e->calls.insert(out_floor);
-					cout << "Adding out floor calls to list... " << out_floor << endl;
-				}
-				else if (e->cur_floor == in_floor) {
-					e->calls.insert(out_floor);
-				}
-				else {
-					// current elevator floor is above the floor person wants to get in from
-					cout << "Call made from below floor..." << endl;
-					v_e.up_wait.emplace(in_floor, out_floor);
-					cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
-				}
-			}
-			else {
-				// if call_direction is down, queue the calls in waiting
-				cout << "Call made from below but elevator moving... " << e->direction << endl;
-				v_e.down_wait.emplace(in_floor, out_floor);
-				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
-			}
-		}
-		// if elevator is moving down
-		else if (e->direction == down) {
-			cout << "Elevator is moving... " << e->direction << endl;
-			// if call came from floor below
-			if (call_direction(in_floor, out_floor) == down) {
-				cout << "Call made from below floor... " << endl;
-				// if elevator is above the floor call came from
-				if (e->cur_floor > in_floor) {
-					// queue floor calls
-					e->calls.insert(in_floor);
-					e->calls.insert(out_floor);
-				}
-				else if (e->cur_floor == in_floor) {
-					e->calls.insert(out_floor);
-					cout << "Adding out floor calls to list... " << out_floor << endl;
-				}
-				else {
-					// if current floor is below the call floor, then queue the call in wait list
-					cout << "Call made from above floor..." << endl;
-					v_e.down_wait.emplace(in_floor, out_floor);
-					cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
-				}
-			}
-			else {
-				// if call was made from top, but elevator is doing down, queue the calls in waiting
-				cout << "Call made from below but elevator moving... " << call_direction << endl;
-				v_e.up_wait.emplace(in_floor, out_floor);
-				cout << "Emplacing call to waitlist... " << in_floor << "," << out_floor << endl;
-			}
-		}*/
 }
 
 // checks the waiting queues for calls 
@@ -293,12 +239,13 @@ void system_step(elevators & v_e, int steps = 1) {
 	cout << "\nStepping elevator... stand by..." << endl;
 	for (int s = 0; s < steps; ++s) {
 		for (each_elevator *e : v_e.v_ee) {
+
 			// if calls currently exist
 			if (e->calls.size()) {
 				cout << "Processing calls..." << endl;
 				// move the elevator in the direction of those calls. Up or down
 				e->cur_floor += e->direction;
-				cout << "Moving... " << e->direction << endl;
+				cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
 				// again... check (in the background), if a call was made for current floor we are moving through
 				if (e->calls.count(e->cur_floor)) {
 					cout << "Reached call floor... " << e->cur_floor << endl;
@@ -316,7 +263,7 @@ void system_step(elevators & v_e, int steps = 1) {
 					cout << "Created temp set..." << endl;
 					// if elevator is going up
 					if (e->direction == up) {
-						cout << "Elevator is moving... " << e->direction << endl;
+						cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
 						// but if calls are made from floors below 
 						if (v_e.down_wait.size()) {
 							cout << "Down wait list has people waiting..." << endl;
@@ -340,7 +287,7 @@ void system_step(elevators & v_e, int steps = 1) {
 					}
 					// if elevator is going down
 					else if (e->direction == down) {
-						cout << "Elevator is moving... " << e->direction << endl;
+						cout << "Moving elevator [" << e->id << "] ... " << get_enum_direction(e->direction) << endl;
 						// but if calls are made from floors above
 						if (v_e.up_wait.size()) {
 							cout << "Up wait list has people waiting..." << endl;
@@ -371,7 +318,7 @@ void system_step(elevators & v_e, int steps = 1) {
 					cout << "Moving to pick up floor... " << temp.first << endl;
 					// Set direction based on start passenger's call
 					e->direction = call_direction(temp.first, temp.second);
-					cout << "Setting direction state... " << e->direction << endl;
+					cout << "Setting direction state... " << get_enum_direction(e->direction) << endl;
 
 					// checks waiting requests for elevator
 					cout << "Checking wait list requests..." << endl;
@@ -382,7 +329,7 @@ void system_step(elevators & v_e, int steps = 1) {
 				else {
 					cout << "No calls currently exist..." << endl;
 					e->direction = idle;
-					cout << "Elevator state set to... " << e->direction << endl;
+					cout << "Elevator state set to... " << get_enum_direction(e->direction) << endl;
 				}
 			}
 		}
@@ -396,11 +343,17 @@ int main() {
 	elevators e;
 	each_elevator e1;
 	each_elevator e2;
-	cout << "Created Elevator object..." << endl;
+	cout << "Created Elevator objects..." << endl;
 
 	e.v_ee.push_back(&e1);
 	e.v_ee.push_back(&e2);
+
+	for (int i = 0; i < e.v_ee.size(); i++){
+		e.v_ee.at(i)->id = i;
+	}
+	int total_elevators = e.v_ee.size(); 
 	cout << "Elevator object pushed into vectors list..." << endl;
+	cout << "There are " << total_elevators << " elevators..." << endl;
 
 	// manually adding calls for elevator pickup and dropoff requests
 	// and elevator system steps through the simulation
