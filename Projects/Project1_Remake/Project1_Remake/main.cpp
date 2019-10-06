@@ -13,11 +13,6 @@
 	a very close, non-complicated, example of how an actual elevator works.
 */
 
-// This is Omer's Git Branch test
-
-//This is THOM'S Github Branch test *******************************
-
-
 #pragma once
 
 // include necessary libraries
