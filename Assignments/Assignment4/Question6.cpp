@@ -10,6 +10,12 @@ using namespace std;
 // It is faster to find an element in vector
 // Faster to push elements into the vector rather than list
 // But deletion is faster in list with larger data because all elements need to be shifted in a vector
+//
+
+
+// Can't modify the vector insertion sort code because with a list, traverse the whole list once, and as youre traversing,
+// you would sort again as youre traversing.
+// So essentially, list is far slower in insertion sort performance
 
 int insertion_sort(list<int> &num){
     int i, j, key;
