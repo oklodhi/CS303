@@ -6,6 +6,11 @@
 
 using namespace std;
 
+// There is a difference in performance between vector and list (linked list). 
+// It is faster to find an element in vector
+// Faster to push elements into the vector rather than list
+// But deletion is faster in list with larger data because all elements need to be shifted in a vector
+
 int insertion_sort(list<int> &num){
     int i, j, key;
     
