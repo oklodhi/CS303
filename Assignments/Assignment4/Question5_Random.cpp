@@ -13,12 +13,12 @@ const int TYPE_REVERSE = 2;
 
 // global counters for comparisons and exchanges
 int comparisons = 0;
-int exchanges = 0;
+int num_exchanges = 0;
 
 // set comparisons and exchnages to 0, used after any type of sort is used
 void set_to_zero() {
 	comparisons = 0;
-	exchanges = 0;
+	num_exchanges = 0;
 }
 
 // generate the arrays of SIZE with depending on RANDOM, ASCENDING, and DESCENDING
@@ -41,9 +41,11 @@ void generate_arrays(int arr[], int size, int arrtype) {
 		//cout << endl << endl;
 	}
 	else if (arrtype == 2) { // reverse sorted fill
+	    int j = 0; 
 		for (int i = size; i > 0; i--) {
 			// fill from 10000 - 1
-			arr[i] = i;
+			arr[j] = i;
+			j++;
 			//cout << arr[i] << " ";
 		}
 		//cout << endl << endl;
@@ -74,7 +76,9 @@ void selectionSort(int arr[], int size) {
 				min = j;
 			}
 		}
-		exchanges++; 
+		if (min != i){
+		    num_exchanges++;
+		} 
 		swap(arr, min, i);
 	}
 }
@@ -85,7 +89,7 @@ void bubbleSort(int arr[], int size) {
 		for (int j = 0; j < size - 1; j++) {
 			comparisons++;
 			if (arr[j+1] < arr[j]) {
-				exchanges++;
+				num_exchanges++;
 				swap(arr, j, j+1);
 			}
 		}
@@ -105,7 +109,7 @@ void insertionSort(int arr[], int size)
 		while (j >= 0 && arr[j-1] > key)
 		{
 			comparisons++;
-			exchanges++;
+			num_exchanges++;
 			arr[j] = arr[j-1];
 			j--;
 		}
@@ -125,7 +129,7 @@ void shellSort(int arr[], int size) {
 				comparisons++;
 				if (arr[j] < arr[j - x])
 				{
-					exchanges++;
+					num_exchanges++;
 					swap(arr, j, j - x);
 				}
 				else
@@ -151,11 +155,11 @@ void merge(int arr[], int l, int m, int r)
 
 	/* Copy data to temp arrays L[] and R[] */
 	for (i = 0; i < n1; i++) {
-		exchanges++;
+		num_exchanges++;
 		L[i] = arr[l + i];
 	}
 	for (j = 0; j < n2; j++) {
-		exchanges++;
+		num_exchanges++;
 		R[j] = arr[m + 1 + j];
 	}
 
@@ -168,13 +172,13 @@ void merge(int arr[], int l, int m, int r)
 		comparisons++;
 		if (L[i] <= R[j])
 		{
-			exchanges++;
+			num_exchanges++;
 			arr[k] = L[i];
 			i++;
 		}
 		else
 		{
-			exchanges++;
+			num_exchanges++;
 			arr[k] = R[j];
 			j++;
 		}
@@ -185,7 +189,7 @@ void merge(int arr[], int l, int m, int r)
 	   are any */
 	while (i < n1)
 	{
-		exchanges++;
+		num_exchanges++;
 		arr[k] = L[i];
 		i++;
 		k++;
@@ -195,7 +199,7 @@ void merge(int arr[], int l, int m, int r)
 	   are any */
 	while (j < n2)
 	{
-		exchanges++;
+		num_exchanges++;
 		arr[k] = R[j];
 		j++;
 		k++;
@@ -241,11 +245,11 @@ int partition(int arr[], int low, int high)
 		if (arr[j] < pivot)
 		{
 			i++; // increment index of smaller element  
-			exchanges++;
+			num_exchanges++;
 			swap(&arr[i], &arr[j]);
 		}
 	}
-	exchanges++;
+	num_exchanges++;
 	swap(&arr[i + 1], &arr[high]);
 	return (i + 1);
 }
@@ -268,28 +272,27 @@ void quickSort(int arr[], int low, int high)
 
 void sort_median(int arr[], int first, int last) {
 
-	bool exchanges = true;
 	int middle = (first + last) / 2;
 	comparisons++;
 	if (arr[first] > arr[middle]) {
-		exchanges++;
+		num_exchanges++;
 		swap(arr[first], arr[middle]);
 	}
 	comparisons++;
 	if (arr[middle] > arr[last]) {
-		exchanges++;
+		num_exchanges++;
 		swap(arr[middle], arr[last]);
 	}
 		
 	comparisons++;
 	if (arr[first] > arr[middle]) {
-		exchanges++;
+		num_exchanges++;
 		swap(arr[first], arr[middle]);
 	}
 
 
 	//swap the middle with the left 
-	exchanges++;
+	num_exchanges++;
 	swap(arr[middle], arr[first]);
 }
 
@@ -315,12 +318,12 @@ int partitionB(int first, int last, int arr[]) {
 		}
 		if (up < down) {
 			// if up is to the left of down,
-			exchanges++;
+			num_exchanges++;
 			swap(arr[up], arr[down]);
 		}
 	} while (up < down); // Repeat while up is left of down.
 
-	exchanges++;
+	num_exchanges++;
 	swap(arr[mid], arr[down]);
 
 	return down;
@@ -356,98 +359,98 @@ int main() {
 	// SELECTION SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	selectionSort(random_array, SIZE);
-	cout << "Selection Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Selection Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	selectionSort(sorted_array, SIZE);
-	cout << "Selection Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Selection Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	selectionSort(reverse_array, SIZE);
-	cout << "Selection Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Selection Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// BUBBLE SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	bubbleSort(random_array, SIZE);
-	cout << "Bubble Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Bubble Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	bubbleSort(sorted_array, SIZE);
-	cout << "Bubble Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Bubble Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	bubbleSort(reverse_array, SIZE);
-	cout << "Bubble Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Bubble Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// INSERTION SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	insertionSort(random_array, SIZE);
-	cout << "Insertion Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Insertion Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	insertionSort(sorted_array, SIZE);
-	cout << "Insertion Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Insertion Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	insertionSort(reverse_array, SIZE);
-	cout << "Insertion Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Insertion Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// SHELL SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	shellSort(random_array, SIZE);
-	cout << "Shell Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Shell Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	shellSort(sorted_array, SIZE);
-	cout << "Shell Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Shell Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	shellSort(reverse_array, SIZE);
-	cout << "Shell Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Shell Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// MERGE SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	mergeSort(random_array, 0, SIZE - 1);
-	cout << "Merge Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Merge Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	mergeSort(sorted_array, 0, SIZE - 1);
-		cout << "Merge Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+		cout << "Merge Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	mergeSort(reverse_array, 0, SIZE - 1);
-		cout << "Merge Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+		cout << "Merge Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// QUICK SORT COMPARISON AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	quickSort(random_array,0 , SIZE - 1);
-	cout << "Quick Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Quick Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	quickSort(sorted_array, 0, SIZE - 1);
-	cout << "Quick Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Quick Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	quickSort(reverse_array, 0, SIZE - 1);
-	cout << "Quick Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Quick Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	// IMPROVED QUICK SORT COMPARISONS AND EXCHANGES
 	refillArrays(random_array, sorted_array, reverse_array, SIZE);
 	middle_quick_sort_wrapper(random_array, SIZE);
-	cout << "Imp. Quick Sort (Random) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Imp. Quick Sort (Random) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	middle_quick_sort_wrapper(sorted_array, SIZE);
-	cout << "Imp. Quick Sort (Ascend) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Imp. Quick Sort (Ascend) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 
 	middle_quick_sort_wrapper(reverse_array, SIZE);
-	cout << "Imp. Quick Sort (Descen) C: " << comparisons << "\t\tE: " << exchanges << endl;
+	cout << "Imp. Quick Sort (Descen) C: " << comparisons << "\t\tE: " << num_exchanges << endl;
 	set_to_zero();
 }
