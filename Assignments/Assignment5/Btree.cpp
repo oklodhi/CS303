@@ -20,6 +20,11 @@ public:
 	void inorder_print();
 	void postorder_print();
 	void preorder_print();
+	
+	node * getNode() {
+		return root;
+	}
+
 
 private:
 	void destroy_tree(node *leaf);
