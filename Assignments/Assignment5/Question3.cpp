@@ -1,5 +1,5 @@
 #include <iostream>
-#include "btree.cpp"
+#include "btree.h"
 
 using namespace std;
 
