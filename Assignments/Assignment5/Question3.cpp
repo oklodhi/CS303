@@ -28,4 +28,5 @@ int main(){
 
     cout << sum_tree(tree->getNode()); 
 
+	return 0;
 }
