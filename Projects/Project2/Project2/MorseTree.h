@@ -1,5 +1,6 @@
 #pragma once
 
+// include necessary libraries
 #include <iostream>
 #include <string>
 #include <map>
@@ -9,17 +10,15 @@
 
 using namespace std; 
 
+// node structure that contains value (or alphabet), and left child node and right child node
 struct node {
-
 public:
 	char letter;
 	node * lnode = nullptr;
 	node * rnode = nullptr;
-
-private:
-
 };
 
+// morse tree class that contains main functions regarding the binary tree
 class MorseTree
 {
 public:
@@ -30,9 +29,6 @@ public:
 	void buildtree();
 	string traverseTree(string s);
 	string s2m(string s);
-	
-
-	
 	
 private:
 	node * root;
