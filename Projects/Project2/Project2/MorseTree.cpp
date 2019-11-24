@@ -24,22 +24,49 @@ void MorseTree::decode(string s, char c)
 	morse2str.emplace(s, c);
 }
 
-void MorseTree::printEncode()
-{
-	for (map<char, string>::const_iterator it = str2morse.begin(); it != str2morse.end(); ++it) {
-		cout << it->first << endl;
-	}
-}
-
 string MorseTree::traverseTree(string s) {
-	if (isalpha(s.c_str)) {
-		if (s.c_str == this->root->letter) {
+	string delim = ""; 
+	vector<string> vec; 
 
+	node * current = root; 
+
+	for (auto x : s) {
+		if (x == ' ') {
+			vec.push_back(delim); 
+			delim = ""; 
+		}
+		else {
+			delim = delim + x; 
 		}
 	}
-	else {
+	vec.push_back(delim);
 
+	vector<char> charvec; 
+
+	for (unsigned int i = 0; i < vec.size(); i++) {
+		string code = vec[i]; 
+		for (unsigned int k = 0; k < code.length(); k++) {
+			if (current == NULL) {
+				cout << "Error: No valid tree exists..." << endl;
+				exit(0); 
+			}
+			if (code[k] == '.') {
+				current = current->lnode; 
+			}
+			else if (code[k] == '_') {
+				current = current->rnode;
+			}
+		}
+		charvec.push_back(current->letter);
+		current = root; 
 	}
+
+	string finalString(charvec.begin(), charvec.end());
+	return finalString; 
+}
+
+string MorseTree::searchTree(char c, string code = "", node * current) {
+	
 }
 
 void MorseTree::buildtree()
@@ -47,7 +74,7 @@ void MorseTree::buildtree()
 	node * current = root;
 
 	for (map<char, string>::const_iterator it = str2morse.begin(); it != str2morse.end(); ++it) {
-		for (int i = 0; i < it->second.length(); i++) {
+		for (unsigned int i = 0; i < it->second.length(); i++) {
 			if (it->second[i] == '.') {
 				if (current->lnode == nullptr) {
 					current->lnode = new node;

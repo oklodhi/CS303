@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
+#include <cctype>
 
 using namespace std; 
 
@@ -24,9 +26,9 @@ public:
 	~MorseTree();
 	void encode(char c, string s);
 	void decode(string s, char c); 
-	void printEncode(); 
 	void buildtree();
-	string traverseTree(string s); 
+	string traverseTree(string s);
+	string searchTree(char c, string code, node * current); 
 
 
 private:

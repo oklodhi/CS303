@@ -54,9 +54,7 @@ int main(){
 	read_from_file("Morse.txt", M);
 	M.buildtree();
 
-	
-
-	M.printEncode();
+	cout << M.traverseTree(to_decode) << endl;
 
 	return 0;
 }
