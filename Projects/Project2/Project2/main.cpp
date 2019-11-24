@@ -12,6 +12,7 @@ Professor Mayanka
 #include <string>
 
 #include "MorseTree.h"
+#include "main.h"
 
 using namespace std;
 
@@ -32,9 +33,7 @@ void read_from_file(string file, MorseTree &m) {
 
 		stream.get(letter);
 		getline(stream, temp); 
-		 
-		cout << letter << " = " << temp << endl;
-
+		
 		m.encode(letter, temp); 
 		m.decode(temp, letter); 
 
@@ -56,5 +55,7 @@ int main(){
 
 	cout << M.traverseTree(to_decode) << endl;
 
+	cout << M.s2m(to_encode) << endl;
+	
 	return 0;
 }

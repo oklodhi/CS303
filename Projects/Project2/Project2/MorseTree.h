@@ -28,12 +28,17 @@ public:
 	void decode(string s, char c); 
 	void buildtree();
 	string traverseTree(string s);
-	string searchTree(char c, string code, node * current); 
+	string s2m(string s);
+	
 
-
+	
+	
 private:
 	node * root;
+	string currpath = "";
 	map<char, string> str2morse;
 	map<string, char> morse2str;
+	bool search(char c, node * current);
+	string searchTree(char c);
 };
 

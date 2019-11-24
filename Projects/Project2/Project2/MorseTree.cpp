@@ -16,7 +16,7 @@ MorseTree::~MorseTree()
 }
 
 void MorseTree::encode(char c, string s) {
-	str2morse.emplace(c, s); 
+	str2morse.emplace(c, s);
 }
 
 void MorseTree::decode(string s, char c)
@@ -25,48 +25,86 @@ void MorseTree::decode(string s, char c)
 }
 
 string MorseTree::traverseTree(string s) {
-	string delim = ""; 
-	vector<string> vec; 
+	string delim = "";
+	vector<string> vec;
 
-	node * current = root; 
+	node * current = root;
 
 	for (auto x : s) {
 		if (x == ' ') {
-			vec.push_back(delim); 
-			delim = ""; 
+			vec.push_back(delim);
+			delim = "";
 		}
 		else {
-			delim = delim + x; 
+			delim = delim + x;
 		}
 	}
 	vec.push_back(delim);
 
-	vector<char> charvec; 
+	vector<char> charvec;
 
 	for (unsigned int i = 0; i < vec.size(); i++) {
-		string code = vec[i]; 
+		string code = vec[i];
 		for (unsigned int k = 0; k < code.length(); k++) {
 			if (current == NULL) {
 				cout << "Error: No valid tree exists..." << endl;
-				exit(0); 
+				exit(0);
 			}
 			if (code[k] == '.') {
-				current = current->lnode; 
+				current = current->lnode;
 			}
 			else if (code[k] == '_') {
 				current = current->rnode;
 			}
 		}
 		charvec.push_back(current->letter);
-		current = root; 
+		current = root;
 	}
 
 	string finalString(charvec.begin(), charvec.end());
-	return finalString; 
+	return finalString;
 }
 
-string MorseTree::searchTree(char c, string code = "", node * current) {
-	
+string MorseTree::s2m(string s)
+{
+	string result = "";
+	for (unsigned int i = 0; i < s.length(); i++) {
+		if (s.at(i) == ' ') {
+			result += " ";
+		}
+		else {
+			result += searchTree(tolower(s.at(i))) + " ";
+		}
+	}
+	return result;
+}
+
+string MorseTree::searchTree(char c) {
+	this->currpath = "";
+	if (search(c, root)) {
+		reverse(currpath.begin(), currpath.end());
+		return this->currpath;
+	}
+}
+
+bool MorseTree::search(char c, node * current)
+{
+	if (current == NULL) {
+		return false;
+	}
+
+	if (c == current->letter)
+		return true;
+	else if (search(c, current->lnode)) {
+		currpath.append(".");
+		return true;
+	}
+	else if (search(c, current->rnode)) {
+		currpath.append("_");
+		return true;
+	}
+
+	return false;
 }
 
 void MorseTree::buildtree()
@@ -88,8 +126,8 @@ void MorseTree::buildtree()
 				current = current->rnode;
 			}
 		}
-			current->letter = it->first;
-			current = root;
+		current->letter = it->first;
+		current = root;
 	}
 }
 
