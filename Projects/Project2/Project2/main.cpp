@@ -7,14 +7,8 @@ Professor Mayanka
 11/24/19
 */
 
-#include <iostream>
-#include <fstream>
-#include <string>
-
 #include "MorseTree.h"
 #include "main.h"
-
-using namespace std;
 
 void read_from_file(string file, MorseTree &m) {
 	ifstream stream;
@@ -45,17 +39,25 @@ void read_from_file(string file, MorseTree &m) {
 
 
 int main(){
-	string to_encode = "This is dumb";
-	string to_decode = "... ._ _..";
+	const string FILENAME = "Morse.txt";
+
+	const string TO_ENCODE = "This is crazy";
+	const string TO_DECODE = ".__ ___ _._ .._. ..._";
 
 	MorseTree M; 
 	
-	read_from_file("Morse.txt", M);
+	read_from_file(FILENAME, M);
+
 	M.buildtree();
 
-	cout << M.traverseTree(to_decode) << endl;
+	try {
+		cout << M.s2m(TO_ENCODE) << endl;
+		cout << M.traverseTree(TO_DECODE) << endl;
+	}
+	catch (exception e) {
+		cout << "Not a valid string... Exiting Program!" << endl;
+		exit(0);
+	};
 
-	cout << M.s2m(to_encode) << endl;
-	
 	return 0;
 }

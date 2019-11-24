@@ -1,7 +1,5 @@
 #include "MorseTree.h"
 
-
-
 MorseTree::MorseTree()
 {
 	root = new node;
@@ -57,7 +55,9 @@ string MorseTree::traverseTree(string s) {
 				current = current->rnode;
 			}
 		}
-		charvec.push_back(current->letter);
+		if (current != root) {
+			charvec.push_back(current->letter);
+		}
 		current = root;
 	}
 

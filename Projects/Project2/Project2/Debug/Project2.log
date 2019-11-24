@@ -1,2 +1,5 @@
-﻿  main.cpp
-  Project2.vcxproj -> A:\Omer\Documents\Github\CS303\Projects\Project2\Debug\Project2.exe
+﻿  MorseTree.cpp
+  main.cpp
+a:\omer\documents\github\cs303\projects\project2\project2\main.cpp(11): fatal error C1083: Cannot open include file: 'main.h': No such file or directory
+  Generating Code...
+a:\omer\documents\github\cs303\projects\project2\project2\morsetree.cpp(88): warning C4715: 'MorseTree::searchTree': not all control paths return a value
